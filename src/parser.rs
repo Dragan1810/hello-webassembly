@@ -13,26 +13,31 @@ pub fn parse(source: String) -> String {
 impl Parser {
     fn parse_lines(&mut self) -> String {
         let mut result = String::new();
+
         loop {
             self.consume_whitespace();
             if self.end_of_line() {
                 break;
-                }
+            }
+
+            result.push_str(&self.parse_line());
         }
-        result.push_str(&self.parse_line())
+
+        result
     }
 
     fn parse_line(&mut self) -> String {
-        match self.next_char(){
-            _ => self.parse_text(),
+        println!("self.next_char() => {}", &self.next_char());
+        match self.next_char() {
             '#' => self.parse_title(),
             '-' => {
-                if char::is_whitespace(self.input[self.pos+1..].chars().next().unwrap()) {
+                if char::is_whitespace(self.input[self.pos + 1..].chars().next().unwrap()) {
                     self.parse_list()
                 } else {
                     self.parse_text()
                 }
             }
+            _ => self.parse_text(),
         }
     }
 
@@ -97,5 +102,5 @@ fn create_html_element(tag_name: String, text: String) -> String {
 }
 
 fn is_newline(c: char) -> bool {
-    c == '/n'
+    c == '\n'
 }
